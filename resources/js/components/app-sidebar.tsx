@@ -21,8 +21,11 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
-    },
-];
+    },    {
+        title: 'Vision Boards',
+        href: '/vision-boards',
+        icon: LayoutGrid,
+    },];
 
 const footerNavItems: NavItem[] = [
     {

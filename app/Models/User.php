@@ -35,6 +35,15 @@ class User extends Authenticatable implements PasskeyUser
     use HasFactory, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable;
 
     /**
+     * The vision boards belonging to the user.
+     */
+    public function visionBoards()
+    {
+        return $this->belongsToMany(VisionBoard::class, 'user_vision_boards')
+            ->withTimestamps();
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
