@@ -1,5 +1,5 @@
 import { Form, Head, Link, router, usePage } from '@inertiajs/react';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
+import { ArrowRight, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -25,6 +25,7 @@ import type { Auth } from '@/types';
 
 type VisionBoard = {
     id: number;
+    slug: string;
     title: string;
     year: number;
 };
@@ -95,15 +96,26 @@ export default function VisionBoardsIndex() {
                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                     {visionBoards.map((board) => (
                         <Card key={board.id} className="shadow-sm">
-                            <CardHeader>
-                                <CardTitle>{board.title}</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-sm text-muted-foreground">
-                                    {board.year}
-                                </p>
-                            </CardContent>
-                            <CardFooter className="flex items-center justify-end gap-2">
+                            <Link
+                                href={`/vision-boards/${board.slug}/brief`}
+                                className="block rounded-t-xl transition hover:bg-muted/40"
+                            >
+                                <CardHeader>
+                                    <CardTitle>{board.title}</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <p className="text-sm text-muted-foreground">{board.year}</p>
+                                </CardContent>
+                            </Link>
+                            <CardFooter className="flex flex-wrap items-center justify-between gap-2">
+                                <Button asChild variant="outline" size="sm">
+                                    <Link href={`/vision-boards/${board.slug}/brief`}>
+                                        Ouvrir le brief
+                                        <ArrowRight className="h-4 w-4" />
+                                    </Link>
+                                </Button>
+
+                                <div className="flex items-center gap-2">
                                 <Button
                                     variant="secondary"
                                     size="sm"
@@ -138,9 +150,7 @@ export default function VisionBoardsIndex() {
                                             <Button
                                                 variant="destructive"
                                                 onClick={() =>
-                                                    router.delete(
-                                                        `/vision-boards/${board.id}`,
-                                                    )
+                                                    router.delete(`/vision-boards/${board.slug}`)
                                                 }
                                             >
                                                 Delete
@@ -148,6 +158,7 @@ export default function VisionBoardsIndex() {
                                         </DialogFooter>
                                     </DialogContent>
                                 </Dialog>
+                                </div>
                             </CardFooter>
                         </Card>
                     ))}
@@ -169,7 +180,7 @@ export default function VisionBoardsIndex() {
 
                     <Form
                         method={activeBoard ? 'put' : 'post'}
-                        action={activeBoard ? `/vision-boards/${activeBoard.id}` : '/vision-boards'}
+                        action={activeBoard ? `/vision-boards/${activeBoard.slug}` : '/vision-boards'}
                         onSuccess={handleClose}
                         className="space-y-4"
                     >

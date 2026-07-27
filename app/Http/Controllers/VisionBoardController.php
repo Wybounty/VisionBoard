@@ -23,6 +23,7 @@ class VisionBoardController extends Controller
         return Inertia::render('vision-boards/index', [
             'visionBoards' => $visionBoards->map(fn (VisionBoard $visionBoard) => [
                 'id' => $visionBoard->id,
+                'slug' => $visionBoard->slug,
                 'title' => $visionBoard->title,
                 'year' => $visionBoard->year,
             ]),
