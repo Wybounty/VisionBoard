@@ -14,17 +14,17 @@ type VisionBoard = {
     year: number;
 };
 
+type Theme = {
+    title: string;
+    description: string;
+    motivational_phrase: string;
+};
+
 type VisionBoardBrief = {
     id: number;
     summary: string;
     data: {
-        theme: string;
-        goals: string[];
-        drivers: string[];
-        obstacles: string[];
-        opportunities: string[];
-        next_steps: string[];
-        tone: string;
+        themes: Theme[];
     };
     created_at: string | null;
 };
@@ -37,31 +37,6 @@ type PageProps = {
         success?: string;
     };
 };
-
-function AnalysisList({
-    title,
-    items,
-}: {
-    title: string;
-    items: string[];
-}) {
-    if (items.length === 0) {
-        return null;
-    }
-
-    return (
-        <div className="space-y-2">
-            <h4 className="text-sm font-semibold text-foreground">{title}</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-                {items.map((item) => (
-                    <li key={item} className="rounded-lg border border-border/70 bg-background/70 px-3 py-2">
-                        {item}
-                    </li>
-                ))}
-            </ul>
-        </div>
-    );
-}
 
 export default function VisionBoardBriefPage() {
     const { visionBoard, latestBrief, flash } = usePage<PageProps>().props;
@@ -83,8 +58,8 @@ export default function VisionBoardBriefPage() {
                                 {visionBoard.title}
                             </h1>
                             <p className="max-w-2xl text-base leading-7 text-muted-foreground">
-                                Décrivez vos objectifs, vos rêves et la vie que vous souhaitez construire.
-                                Nous transformerons ensuite ce texte en une analyse claire et exploitable.
+                                Décrivez vos idées, vos envies et la vie que vous souhaitez construire.
+                                Nous en extrairons ensuite les thèmes clés pour générer le Vision Board.
                             </p>
                         </div>
 
@@ -121,7 +96,7 @@ export default function VisionBoardBriefPage() {
 
                                             <div className="flex flex-wrap items-center justify-between gap-3">
                                                 <p className="text-sm text-muted-foreground">
-                                                    Plus votre brief est concret, plus l’analyse sera utile.
+                                                    Plus votre brief est concret, plus l&apos;analyse sera utile.
                                                 </p>
                                                 <Button type="submit" disabled={processing} className="min-w-52">
                                                     {processing ? (
@@ -161,26 +136,23 @@ export default function VisionBoardBriefPage() {
                                             </p>
                                         </div>
 
-                                        <div className="grid gap-4">
-                                            <div className="rounded-2xl border border-border/70 bg-muted/30 p-4">
-                                                <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                                                    Thème
-                                                </p>
-                                                <p className="text-sm text-foreground">{latestBrief.data.theme}</p>
-                                            </div>
-
-                                            <AnalysisList title="Objectifs" items={latestBrief.data.goals} />
-                                            <AnalysisList title="Moteurs" items={latestBrief.data.drivers} />
-                                            <AnalysisList title="Blocages" items={latestBrief.data.obstacles} />
-                                            <AnalysisList title="Opportunités" items={latestBrief.data.opportunities} />
-                                            <AnalysisList title="Prochaines étapes" items={latestBrief.data.next_steps} />
-
-                                            <div className="rounded-2xl border border-border/70 bg-muted/30 p-4">
-                                                <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                                                    Tonalité
-                                                </p>
-                                                <p className="text-sm text-foreground">{latestBrief.data.tone}</p>
-                                            </div>
+                                        <div className="grid gap-3">
+                                            {latestBrief.data.themes.map((theme) => (
+                                                <div
+                                                    key={`${theme.title}-${theme.description}`}
+                                                    className="rounded-2xl border border-border/70 bg-muted/30 p-4"
+                                                >
+                                                    <p className="text-sm font-semibold text-foreground">
+                                                        {theme.title}
+                                                    </p>
+                                                    <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                                                        {theme.description}
+                                                    </p>
+                                                    <p className="mt-3 text-sm font-medium text-foreground">
+                                                        {theme.motivational_phrase}
+                                                    </p>
+                                                </div>
+                                            ))}
                                         </div>
                                     </>
                                 ) : (
@@ -189,25 +161,12 @@ export default function VisionBoardBriefPage() {
                                             Aucune analyse n&apos;a encore été générée pour ce Vision Board.
                                         </p>
                                         <p>
-                                            Remplissez le brief pour obtenir un résumé et une lecture structurée de votre vision.
+                                            Remplissez le brief pour obtenir un résumé et les thèmes clés de votre vision.
                                         </p>
                                     </div>
                                 )}
                             </CardContent>
                         </Card>
-
-                        {latestBrief && (
-                            <Card className="border-border/70 bg-background/80 backdrop-blur">
-                                <CardHeader>
-                                    <CardTitle className="text-base">Données brutes</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <pre className="overflow-auto rounded-2xl border border-border/70 bg-muted/30 p-4 text-xs leading-5 text-muted-foreground">
-                                        {JSON.stringify(latestBrief.data, null, 2)}
-                                    </pre>
-                                </CardContent>
-                            </Card>
-                        )}
                     </aside>
                 </div>
             </div>
